@@ -79,36 +79,27 @@ module AI
   end
 
   def horizontal_score(board_data, next_x, next_y, value)
-    [
-      check_score(board_data, next_x, next_y, value) do |x, y|
-        [x + 1, y]
-      end,
-      check_score(board_data, next_x, next_y, value) do |x, y|
-        [x - 1, y]
-      end,
-    ].max
+    check_score(board_data, next_x, next_y, value) do |x, y|
+      [x + 1, y]
+    end + check_score(board_data, next_x, next_y, value) do |x, y|
+      [x - 1, y]
+    end
   end
 
   def diagonal_left_score(board_data, next_x, next_y, value)
-    [
-      check_score(board_data, next_x, next_y, value) do |x, y|
-        [x - 1, y - 1]
-      end,
-      check_score(board_data, next_x, next_y, value) do |x, y|
-        [x + 1, y + 1]
-      end,
-    ].max
+    check_score(board_data, next_x, next_y, value) do |x, y|
+      [x - 1, y - 1]
+    end + check_score(board_data, next_x, next_y, value) do |x, y|
+      [x + 1, y + 1]
+    end
   end
 
   def diagonal_right_score(board_data, next_x, next_y, value)
-    [
-      check_score(board_data, next_x, next_y, value) do |x, y|
-        [x + 1, y - 1]
-      end,
-      check_score(board_data, next_x, next_y, value) do |x, y|
-        [x - 1, y + 1]
-      end,
-    ].max
+    check_score(board_data, next_x, next_y, value) do |x, y|
+      [x + 1, y - 1]
+    end + check_score(board_data, next_x, next_y, value) do |x, y|
+      [x - 1, y + 1]
+    end
   end
 
   def display_evil_message
