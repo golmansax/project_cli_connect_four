@@ -58,74 +58,57 @@ module AI
     end
   end
 
-  def vertical_score(board_data, next_x, next_y, value)
+  def check_score(board_data, next_x, next_y, value)
     score = 1
-    # check down
-    down = next_y - 1
-    until down < 0 
-      board_data[down][next_x] == value ? score += 1 : break
-      down -= 1
-    end 
-    score 
+    loop do
+      next_x, next_y = yield(next_x, next_y)
+      break if next_x < 0 ||
+        next_x > 6 ||
+        next_y < 0 ||
+        next_y > 5 ||
+        board_data[next_y, next_x] != value
+      score += 1
+    end
+    score
+  end
+
+  def vertical_score(board_data, next_x, next_y, value)
+    check_score(board_data, next_x, next_y, value) do |x, y|
+      [x, y - 1]
+    end
   end
 
   def horizontal_score(board_data, next_x, next_y, value)
-    score = 1
-    left = next_x - 1
-    right = next_x + 1
-    # check left
-    until left < 0
-      board_data[next_y][left] == value ? score += 1 : break
-      left -= 1
-    end
-    # check right
-    until right > 6
-      board_data[next_y][right] == value ? score += 1 : break
-      right += 1
-    end
-    score
+    [
+      check_score(board_data, next_x, next_y, value) do |x, y|
+        [x + 1, y]
+      end,
+      check_score(board_data, next_x, next_y, value) do |x, y|
+        [x - 1, y]
+      end,
+    ].max
   end
 
   def diagonal_left_score(board_data, next_x, next_y, value)
-    score = 1
-    # check left & down
-    left = next_x - 1
-    down = next_y - 1
-    until left < 0 || down < 0
-      board_data[down][left] == value ? score += 1 : break
-      left -= 1
-      down -= 1
-    end
-    # check right & up
-    right = next_x + 1
-    up = next_y + 1
-    until right > 6 || up > 5
-      board_data[up][right] == value ? score += 1 : break
-      right += 1
-      up += 1
-    end
-    score
+    [
+      check_score(board_data, next_x, next_y, value) do |x, y|
+        [x - 1, y - 1]
+      end,
+      check_score(board_data, next_x, next_y, value) do |x, y|
+        [x + 1, y + 1]
+      end,
+    ].max
   end
 
   def diagonal_right_score(board_data, next_x, next_y, value)
-    score = 1
-    # check right & down
-    right = next_x + 1
-    down = next_y - 1
-    until right > 6 || down < 0
-      board_data[down][right] == value ? score += 1 : break
-      right += 1
-      down -= 1
-    end
-    # check left & up
-    left = next_x - 1
-    up = next_y + 1
-    until left < 0 || up > 5
-      board_data[up][left] == value ? score += 1 : break
-      left -= 1
-      up += 1
-    end
-    score
+    [
+      check_score(board_data, next_x, next_y, value) do |x, y|
+        [x + 1, y - 1]
+      end,
+      check_score(board_data, next_x, next_y, value) do |x, y|
+        [x - 1, y + 1]
+      end,
+    ].max
   end
 
   def display_evil_message
